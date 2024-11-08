@@ -6,13 +6,11 @@ import workerRouter from "./routes/worker.js";
 import taskRouter from "./routes/task.js";
 import cors from "cors";
 import helmet from "helmet";
-import morgan from "mrogan";
+import morgan from "morgan";
 
-// basic error handling
-app.use((err, req, res, next) =>{
-    console.error(err.stack);
-    res.status(500).send('Something went wrong!');
-});
+
+// // Initialize express app
+const app = express();
 
 // database connection
 await mongoose.connect(process.env.MONGO_URI)
@@ -31,8 +29,14 @@ app.use('/api/user', userRouter);
 app.use('/api/worker', workerRouter);
 app.use('/api/task', taskRouter);
 
+// error handling middleware (should be after routes)
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+});
+
 // listen for incoming requests
 const PORT = process.env.PORT || 3010;
-app.listen(3010, () => {
+app.listen(PORT, () => {
     console.log(`App is listening on port ${PORT}`)
 }); 

@@ -1,17 +1,17 @@
 import { Router } from "express";
-import auth from "../middleware/auth.js";
+import { isAthenticated } from "../middleware/auth.js";
 import { addService, addWorker, assignTask, deleteService, deleteWorker, getAllTasks, getDashboardStats } from "../controllers/admin.js";
-import isaDmin from "../middleware/admin.js"
+import { isAdmin } from "../middleware/admin.js"
 
 const adminRouter = Router();
 
-router.post('/workers', [auth, isaDmin], addWorker);
-router.post('/services', [auth, isaDmin], addService);
-router.get('/workers', [auth, isaDmin], getAllTasks);
-router.post('/tasks/assign', [auth, isaDmin], assignTask);
-router.get('/tasks', [auth, isaDmin], getAllTasks);
-router.get('/tasks/:id', [auth, isaDmin], getDashboardStats);
-router.delete('/workers/:id', [auth, isaDmin], deleteWorker);
-router.delete('/services/:id', [auth, isaDmin], deleteService);
+adminRouter.post('/workers', [isAthenticated, isAdmin], addWorker);
+adminRouter.post('/services', [isAthenticated, isAdmin], addService);
+adminRouter.get('/workers', [isAthenticated, isAdmin], getAllTasks);
+adminRouter.post('/tasks/assign', [isAthenticated, isAdmin], assignTask);
+adminRouter.get('/tasks', [isAthenticated, isAdmin], getAllTasks);
+adminRouter.get('/tasks/:id', [isAthenticated, isAdmin], getDashboardStats);
+adminRouter.delete('/workers/:id', [isAthenticated, isAdmin], deleteWorker);
+adminRouter.delete('/services/:id', [isAthenticated, isAdmin], deleteService);
 
 export default adminRouter;

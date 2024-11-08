@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { getAssignedTasks, getWorkerTasks, updateAvailability, updateTaskStatus } from "../controllers/worker.js";
-import auth from "../middleware/auth.js";
+import { getAssignedTasks, updateAvailability, updateTaskStatus } from "../controllers/worker.js";
+import { isAthenticated } from "../middleware/auth.js";
 
 const workerRouter = Router();
 
-workerRouter.get('/tasks', [auth], getAssignedTasks);
-workerRouter.patch('/tasks/:id', [auth], updateTaskStatus);
-workerRouter.patch('/availability', [auth], updateAvailability);
+workerRouter.get('/tasks', [isAthenticated], getAssignedTasks);
+workerRouter.patch('/tasks/:id', [isAthenticated], updateTaskStatus);
+workerRouter.patch('/availability', [isAthenticated], updateAvailability);
 
 export default workerRouter;
