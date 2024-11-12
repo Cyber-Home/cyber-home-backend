@@ -19,6 +19,22 @@ const userSchema = new Schema({
         unique: true,
         lowercase: true
     },
+    homeAddress: {
+        type: String,
+        required: true,
+    },
+    workAddress: {
+        type: String,
+        required: true,
+    },
+    occupation: {
+        type: String,
+        required: true,
+    },
+    uploadId: {
+        type: String,
+        required: true,
+    },
     password: {
         type: String,
         required: true,

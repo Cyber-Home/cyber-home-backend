@@ -24,7 +24,23 @@ const taskSchema = new Schema({
         enum: ['pending', 'assigned', 'in-progress', 'completed', 'cancelled'],
         default: 'pending'
     },
+    title: {
+        type: String,
+        required: true
+    },
     description: {
+        type: String,
+        required: true
+    },
+    contactPerson: {
+        type: String,
+        required: true
+    },
+    phone: {
+        type: String,
+        required: true
+    },
+    upload: {
         type: String,
         required: true
     },

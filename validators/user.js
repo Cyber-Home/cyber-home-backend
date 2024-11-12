@@ -4,8 +4,12 @@ export const registerUserValidator = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     email: Joi.string().email().required(),
+    homeAddress: Joi.string().required(),
+    workAddress: Joi.string().required(),
+    occupation: Joi.string().required(),
     password: Joi.string().required(),
     phone: Joi.string().required(),
+    uploadId: Joi.string().required(),
     role: Joi.string().valid('user', 'admin')
 });
 

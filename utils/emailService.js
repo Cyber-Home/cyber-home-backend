@@ -18,9 +18,9 @@ export const sendWelcomeEmail = async (email, name) => {
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: email,
-            subject: 'Welcome to CyberHome',
+            subject: 'Welcome to DailySpot',
             html: `
-                    <h1>Welcome to CyberHome, ${name}!</h1>
+                    <h1>Welcome to DailySpot, ${name}!</h1>
                     <p>Thank you for joining our platform. We're excited to help you manage your daily tasks.</p>
                     <p>Get started by creating your first task!</p>
                 `
@@ -65,7 +65,7 @@ export const sendTaskAssignedEmail = async (email, task, worker) => {
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: email,
-            subject: 'Task Assigned - CyberHome',
+            subject: 'Task Assigned - DailySpot',
             html: `
                     <h2>Your task has been assigned!</h2>
                     <p>Task: ${task.description}</p>

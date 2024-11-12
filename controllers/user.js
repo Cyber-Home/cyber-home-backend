@@ -12,7 +12,7 @@ export const register = async (req, res) => {
             return res.status(422).json(error);
         }
         // validating email
-        const { firstName, lastName, email, password, phone } = req.body;
+        const { firstName, lastName, email, homeAddress, workAddress, occupation, password, phone, uploadId } = req.body;
 
         let user = await UserModel.findOne({ email });
         if (user) {
@@ -23,8 +23,12 @@ export const register = async (req, res) => {
             firstName,
             lastName,
             email,
+            homeAddress,
+            workAddress,
+            occupation,
             password,
-            phone
+            phone,
+            uploadId
         });
 
         await user.save();
@@ -41,6 +45,11 @@ export const register = async (req, res) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
+                homeAddress: user.homeAddress,
+                workAddress: user.workAddress,
+                occupation: user.occupation,
+                phone: user.phone,
+                uploadId: user.uploadId,
                 role: user.role
             }
         });

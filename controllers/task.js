@@ -6,14 +6,18 @@ import { notifyAdminNewTask } from "../utils/emailService.js";
 export const createTask = async (req, res) => {
     try {
         // validating task details
-        const { service, description, scheduledDate, location, priority } = req.body;
+        const { service, title, description, contactPerson, phone, upload, scheduledDate, location, priority } = req.body;
         // creating task
         const task = new TaskModel({
             user: req.user._id,
             service,
+            title,
             description,
+            contactPerson,
+            phone,
             scheduledDate,
             location,
+            upload,
             priority
         });
 

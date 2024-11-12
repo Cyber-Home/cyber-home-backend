@@ -3,11 +3,18 @@ import { TaskModel } from "../models/task.js";
 import { WorkerModel } from "../models/worker.js";
 import { ServiceModel } from "../models/service.js";
 import { sendTaskAssignedEmail } from "../utils/emailService.js";
+import { addServiceValidator, addWorkerValidator } from "../validators/admin.js";
 
 
 // Worker Management
 export const addWorker = async (req, res) => {
     try {
+        // validate user input
+        const { error, value } = addWorkerValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
+        }
+
         const { firstName, lastName, email, phone, services, availability, documents } = req.body;
         // checking if worker already exists
         const workerExists = await WorkerModel.findOne({ email });
@@ -65,6 +72,12 @@ export const deleteWorker = async (req, res) => {
 // Service Management
 export const addService = async (req, res) => {
     try {
+        // validate user input
+        const { error, value } = addServiceValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
+        }
+        
         const { name, description, category, price, duration } = req.body;
         // checking if service already exists
         const serviceExists = await ServiceModel.findOne({ name });
