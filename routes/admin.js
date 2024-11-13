@@ -2,10 +2,11 @@ import { Router } from "express";
 import { isAuthenticated } from "../middleware/auth.js";
 import { addService, addWorker, assignTask, deleteService, deleteWorker, getAllTasks, getDashboardStats } from "../controllers/admin.js";
 import { isAdmin } from "../middleware/admin.js"
+import { remoteUpload } from "../middleware/upload.js";
 
 const adminRouter = Router();
 
-adminRouter.post('/workers', isAuthenticated, isAdmin, addWorker);
+adminRouter.post('/workers', isAuthenticated, isAdmin, remoteUpload.single('documents'), addWorker);
 adminRouter.post('/services', isAuthenticated, isAdmin, addService);
 adminRouter.get('/workers', isAuthenticated, isAdmin, getAllTasks);
 adminRouter.post('/tasks/assign', isAuthenticated, isAdmin, assignTask);
