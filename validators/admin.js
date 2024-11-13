@@ -8,7 +8,10 @@ export const addServiceValidator = Joi.object({
         base: Joi.number().required(),
         unit: Joi.string().required()
     }).required(),
-    duration: Joi.string().required()
+    duration: Joi.object({
+        estimated: Joi.number().required(),
+        unit: Joi.string().required()
+    }).required()
 })
 
 
@@ -19,11 +22,11 @@ export const addWorkerValidator = Joi.object({
     phone: Joi.string().required(),
     services: Joi.string().required(),
     availability: Joi.array().items(
-            Joi.object({
-                day: Joi.string().required(),
-                startTime: Joi.string().required(),
-                endTime: Joi.string().required()
-            })
-        ).required(),
+        Joi.object({
+            day: Joi.string().required(),
+            startTime: Joi.string().required(),
+            endTime: Joi.string().required()
+        })
+    ).required(),
     documents: Joi.string().required()
 })
