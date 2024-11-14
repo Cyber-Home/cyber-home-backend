@@ -50,11 +50,7 @@ const taskSchema = new Schema({
     },
     location: {
         address: String,
-        city: String,
-        coordinates: {
-            lat: Number,
-            lng: Number
-        }
+        city: String
     },
     priority: {
         type: String,
