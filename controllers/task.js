@@ -9,7 +9,7 @@ export const createTask = async (req, res) => {
         const { service, title, description, contactPerson, phone, upload, scheduledDate, location, priority } = req.body;
         // creating task
         const task = new TaskModel({
-            user: req.user._id,
+            user: req.auth.id,
             service,
             title,
             description,
