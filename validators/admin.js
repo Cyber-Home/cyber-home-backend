@@ -20,7 +20,9 @@ export const addWorkerValidator = Joi.object({
     lastName: Joi.string().required(),
     email: Joi.string().email().required(),
     phone: Joi.string().required(),
-    services: Joi.string().required(),
+    services: Joi.array().items(
+        Joi.string().required()
+    ).required(),
     availability: Joi.array().items(
         Joi.object({
             day: Joi.string().required(),
