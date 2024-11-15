@@ -1,11 +1,17 @@
 import { TaskModel } from "../models/task.js";
 import { notifyAdminNewTask } from "../utils/emailService.js";
 import { UserModel } from "../models/user.js";
+import { addTaskValidator } from "../validators/task.js";
 
 
 
 export const createTask = async (req, res) => {
     try {
+        // validate user input
+        const { error, value } = addTaskValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
+        }
         // Debug log to check auth object
         console.log('Auth object:', req.auth);
 
@@ -20,8 +26,17 @@ export const createTask = async (req, res) => {
         // validating task details
         const { service, title, description, contactPerson, phone, upload, scheduledDate, location, priority } = req.body;
         
+        // adding user id to task created
+        const userId = req.auth.id;
+
+        const user = await UserModel.findOne(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
         // creating task with auth.id
         const task = new TaskModel({
+            user,
             service,
             title,
             description,
@@ -29,8 +44,7 @@ export const createTask = async (req, res) => {
             phone,
             scheduledDate,
             location,
-            upload,
-            priority
+            upload
         });
 
         // Add optional fields if they exist
@@ -40,15 +54,13 @@ export const createTask = async (req, res) => {
         console.log('Task data before save:', task);
 
         // Create and save task
-        await task.save({
-            user: req.auth.id
-        });
+        await task.save();
 
         // Notify admin about new task
         try {
             await notifyAdminNewTask(
                 await task.populate('service'),
-                req.auth
+                user
             );
         } catch (emailError) {
             console.error('Failed to send admin notification:', emailError);

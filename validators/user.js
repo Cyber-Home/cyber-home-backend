@@ -1,5 +1,6 @@
 import Joi from "joi";
 
+
 export const registerUserValidator = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),

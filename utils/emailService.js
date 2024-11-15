@@ -44,11 +44,11 @@ export const notifyAdminNewTask = async (task, user) => {
                 <h2>New Task Requires Review</h2>
                 <h3>Task Details:</h3>
                 <ul>
-                    <li><strong>User:</strong> ${user.firstName} ${user.lastName} (${user.email})</li>
-                    <li><strong>Description:</strong> ${task.description}</li>
-                    <li><strong>Scheduled Date:</strong> ${new Date(task.scheduledDate).toLocaleString()}</li>
-                    <li><strong>Priority:</strong> ${task.priority}</li>
-                    <li><strong>Location:</strong> ${task.location.address}</li>
+                    <li><strong style="color:green;">User:</strong> ${user.firstName} ${user.lastName} (${user.email})</li>
+                    <li><strong style="color:green;">Description:</strong> ${task.description}</li>
+                    <li><strong style="color:green;">Scheduled Date:</strong> ${new Date(task.scheduledDate).toLocaleString()}</li>
+                    <li><strong style="color:green;">Phone:</strong> ${task.phone}</li>
+                    <li><strong style="color:green;">Location:</strong> ${task.location}</li>
                 </ul>
                 <p>Please review and assign this task to an available worker.</p>
                 <p>Access the admin dashboard to manage this task.</p>

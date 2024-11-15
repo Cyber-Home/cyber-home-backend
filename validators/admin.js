@@ -1,5 +1,6 @@
 import Joi from "joi";
 
+
 export const addServiceValidator = Joi.object({
     name: Joi.string().required(),
     description: Joi.string().required(),
@@ -12,7 +13,7 @@ export const addServiceValidator = Joi.object({
         estimated: Joi.number().required(),
         unit: Joi.string().required()
     }).required()
-})
+});
 
 
 export const addWorkerValidator = Joi.object({
@@ -33,4 +34,4 @@ export const addWorkerValidator = Joi.object({
     documents: Joi.array().items(
         Joi.string().required()
     ).required()
-})
+});

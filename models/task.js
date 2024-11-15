@@ -4,6 +4,10 @@ import { toJSON } from "@reis/mongoose-to-json";
 
 // creating task schema
 const taskSchema = new Schema({
+    user:{
+        type: Types.ObjectId,
+        ref: 'User'
+    },
     service: {
         type: Types.ObjectId,
         ref: 'Service',
@@ -44,13 +48,8 @@ const taskSchema = new Schema({
         required: true
     },
     location: {
-        address: String,
-        city: String
-    },
-    priority: {
         type: String,
-        enum: ['low', 'medium', 'high'],
-        default: 'medium'
+        required: true
     },
     createdAt: {
         type: Date,
