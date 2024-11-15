@@ -1,15 +1,27 @@
 import { TaskModel } from "../models/task.js";
 import { notifyAdminNewTask } from "../utils/emailService.js";
+import { UserModel } from "../models/user.js";
 
 
 
 export const createTask = async (req, res) => {
     try {
+        // Debug log to check auth object
+        console.log('Auth object:', req.auth);
+
+        // Check if auth exists
+        if (!req.auth || req.auth.id) {
+            return res.status(401).json({
+                success: false,
+                message: 'User not authenticated'
+            });
+        }
+
         // validating task details
         const { service, title, description, contactPerson, phone, upload, scheduledDate, location, priority } = req.body;
-        // creating task
+        
+        // creating task with auth.id
         const task = new TaskModel({
-            user: req.auth.id,
             service,
             title,
             description,
@@ -21,26 +33,46 @@ export const createTask = async (req, res) => {
             priority
         });
 
-        await task.save();
+        // Add optional fields if they exist
+        if (upload) task.upload = upload;
+
+        // Debug log to check task data
+        console.log('Task data before save:', task);
+
+        // Create and save task
+        await task.save({
+            user: req.auth.id
+        });
 
         // Notify admin about new task
-        await notifyAdminNewTask(
-            await TaskModel.populate('service'),
-            req.user
-        );
+        try {
+            await notifyAdminNewTask(
+                await task.populate('service'),
+                req.auth
+            );
+        } catch (emailError) {
+            console.error('Failed to send admin notification:', emailError);
+        }
 
-        res.status(201).json(task);
+        res.status(201).json({
+            success: true,
+            message: 'Task created successfully',
+            data: task
+        });
     } catch (error) {
         console.error('Task creation error:', error);
-        res.status(500).json({ message: 'Error creating task' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Error creating task',
+            error: error.message 
+        });
     }
 }
 
 
 export const getUserTasks = async (req, res) => {
     try {
-        // finding tasks for user
-        const tasks = await TaskModel.find({ user: req.user._id })
+        const tasks = await TaskModel.find({ user: req.auth.id })
             .populate('service')
             .populate('worker')
             .sort({ createdAt: -1 });
@@ -54,21 +86,23 @@ export const getUserTasks = async (req, res) => {
 
 export const updateTask = async (req, res) => {
     try {
-        // validating updates
         const updates = Object.keys(req.body);
         const allowedUpdates = ['description', 'scheduledDate', 'priority', 'status'];
         const isValidOperation = updates.every(update => allowedUpdates.includes(update));
-        // if valid updates
+
         if (!isValidOperation) {
             return res.status(400).json({ message: 'Invalid updates' });
         }
-        // finding task
-        const task = await TaskModel.findOne({ _id: req.params.id, user: req.user._id });
+
+        const task = await TaskModel.findOne({ 
+            _id: req.params.id, 
+            user: req.auth.id  
+        });
 
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
-        // updating task
+
         updates.forEach(update => task[update] = req.body[update]);
         await task.save();
 
@@ -81,10 +115,9 @@ export const updateTask = async (req, res) => {
 
 export const deleteTask = async (req, res) => {
     try {
-        // finding task
         const task = await TaskModel.findOneAndDelete({
             _id: req.params.id,
-            user: req.user._id,
+            user: req.auth.id,  
             status: 'pending'
         });
 
