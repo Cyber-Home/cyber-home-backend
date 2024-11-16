@@ -10,7 +10,7 @@ export const registerUserValidator = Joi.object({
     occupation: Joi.string().required(),
     password: Joi.string().required(),
     phone: Joi.string().required(),
-    uploadId: Joi.string().allow(null, ''),
+    uploadId: Joi.string().required(),
     role: Joi.string().valid('user', 'admin')
 });
 
