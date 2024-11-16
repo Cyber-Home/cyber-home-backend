@@ -7,7 +7,7 @@ import { sendWelcomeEmail } from "../utils/emailService.js";
 export const register = async (req, res) => {
     try {
         // validate user input
-        const { error, value } = registerUserValidator.validate(req.body, req.file?.filename);
+        const { error, value } = registerUserValidator.validate(req.body);
         if (error) {
             return res.status(422).json(error);
         }
