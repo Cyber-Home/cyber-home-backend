@@ -8,7 +8,7 @@ import { addTaskValidator } from "../validators/task.js";
 export const createTask = async (req, res) => {
     try {
         // validate user input
-        const { error, value } = addTaskValidator.validate({...req.body, upload: req.file?.filename});
+        const { error, value } = addTaskValidator.validate(req.body, req.file?.filename);
         if (error) {
             return res.status(422).json(error);
         }
