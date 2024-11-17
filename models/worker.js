@@ -1,6 +1,5 @@
 import { Schema, model, Types } from "mongoose";
 import { toJSON } from "@reis/mongoose-to-json";
-import { required } from "joi";
 
 
 // creating worker schema 

@@ -15,7 +15,7 @@ export const addWorker = async (req, res) => {
             return res.status(422).json(error);
         }
 
-        const { firstName, lastName, email, phone, services, availability, documents } = req.body;
+        const { firstName, lastName, email, phone, services, availability, document } = req.body;
         // checking if worker already exists
         const workerExists = await WorkerModel.findOne({ email });
         if (workerExists) {
