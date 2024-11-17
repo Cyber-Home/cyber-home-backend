@@ -10,7 +10,7 @@ import { addServiceValidator, addWorkerValidator } from "../validators/admin.js"
 export const addWorker = async (req, res) => {
     try {
         // validate user input
-        const { error, value } = addWorkerValidator.validate({...req.body, documents:req.file?.filename});
+        const { error, value } = addWorkerValidator.validate({...req.body, document:req.file?.filename});
         if (error) {
             return res.status(422).json(error);
         }
@@ -29,7 +29,7 @@ export const addWorker = async (req, res) => {
             phone,
             services,
             availability,
-            documents:req.file?.filename
+            document:req.file?.filename
         });
 
         await worker.save();

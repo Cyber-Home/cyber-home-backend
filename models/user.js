@@ -7,11 +7,11 @@ import { toJSON } from "@reis/mongoose-to-json";
 const userSchema = new Schema({
     firstName: {
         type: String,
-        required: true,
+        required: true
     },
     lastName: {
         type: String,
-        required: true,
+        required: true
     },
     email: {
         type: String,
@@ -21,19 +21,19 @@ const userSchema = new Schema({
     },
     homeAddress: {
         type: String,
-        required: true,
+        required: true
     },
     workAddress: {
         type: String,
-        required: true,
+        required: true
     },
     occupation: {
         type: String,
-        required: true,
+        required: true
     },
     uploadId: {
         type: String,
-        required: true,
+        required: true
     },
     password: {
         type: String,

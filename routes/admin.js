@@ -6,7 +6,7 @@ import { remoteUpload } from "../middleware/upload.js";
 
 const adminRouter = Router();
 
-adminRouter.post('/workers', isAuthenticated, isAdmin, remoteUpload.single('documents'), addWorker);
+adminRouter.post('/workers', isAuthenticated, isAdmin, remoteUpload.single('document'), addWorker);
 adminRouter.post('/services', isAuthenticated, isAdmin, addService);
 adminRouter.get('/workers', isAuthenticated, isAdmin, getAllTasks);
 adminRouter.post('/tasks/assign', isAuthenticated, isAdmin, assignTask);

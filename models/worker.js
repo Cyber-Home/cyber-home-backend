@@ -1,5 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import { toJSON } from "@reis/mongoose-to-json";
+import { required } from "joi";
 
 
 // creating worker schema 
@@ -38,9 +39,10 @@ const workerSchema = new Schema({
         type: Number,
         default: 0
     },
-    documents: [{
+    document: {
         type: String,
-    }],
+        required: true
+    },
     availability: [{
         day: String,
         startTime: String,

@@ -31,7 +31,5 @@ export const addWorkerValidator = Joi.object({
             endTime: Joi.string().required()
         })
     ).required(),
-    documents: Joi.array().items(
-        Joi.string().required()
-    ).required()
+    document: Joi.string().required()
 });
