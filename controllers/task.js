@@ -8,7 +8,7 @@ import { addTaskValidator } from "../validators/task.js";
 export const createTask = async (req, res) => {
     try {
         // validate user input
-        const { error, value } = addTaskValidator.validate(req.body);
+        const { error, value } = addTaskValidator.validate({...req.body, upload:req.file?.filename});
         if (error) {
             return res.status(422).json(error);
         }
@@ -24,7 +24,7 @@ export const createTask = async (req, res) => {
         }
 
         // validating task details
-        const { service, title, description, contactPerson, phone, upload, scheduledDate, location, priority } = req.body;
+        const { service, title, description, contactPerson, phone, upload, scheduledDate, location } = req.body;
         
         // adding user id to task created
         const userId = req.auth.id;
@@ -44,7 +44,7 @@ export const createTask = async (req, res) => {
             phone,
             scheduledDate,
             location,
-            upload
+            upload:req.file?.filename
         });
 
         // Add optional fields if they exist
