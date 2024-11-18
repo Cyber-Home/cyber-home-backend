@@ -8,7 +8,7 @@ import { addTaskValidator, updateTaskValidator } from "../validators/task.js";
 export const createTask = async (req, res) => {
     try {
         // validate user input
-        const { error, value } = addTaskValidator.validate({...req.body, upload:req.file?.filename});
+        const { error, value } = addTaskValidator.validate({ ...req.body, upload: req.file?.filename });
         if (error) {
             return res.status(422).json(error);
         }
@@ -17,23 +17,23 @@ export const createTask = async (req, res) => {
 
         // validating task details
         const { service, title, description, contactPerson, phone, upload, scheduledDate, location } = req.body;
-        
+
         // adding user id to task created
         const userId = req.auth.userId;
         console.log('Converted userId:', userId);
 
         const user = await UserModel.findById(userId);
         console.log('Found user:', user);
-        
+
         // checking if user is authenticated
         if (!user) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
                 message: "User not found",
-                debugInfo: { 
+                debugInfo: {
                     searchedId: userId,
-                    tokenInfo: req.auth 
-                } 
+                    tokenInfo: req.auth
+                }
             });
         }
 
@@ -47,7 +47,7 @@ export const createTask = async (req, res) => {
             phone,
             scheduledDate,
             location,
-            upload:req.file?.filename
+            upload: req.file?.filename
         });
 
         // Debug log to check task data
@@ -73,10 +73,10 @@ export const createTask = async (req, res) => {
         });
     } catch (error) {
         console.error('Task creation error:', error);
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: 'Error creating task',
-            error: error.message 
+            error: error.message
         });
     }
 }
@@ -98,27 +98,39 @@ export const getUserTasks = async (req, res) => {
 
 export const updateTask = async (req, res, next) => {
     try {
-
-        const {error, value} = updateTaskValidator.validate(req.body);
+        // validating user inputs
+        const { error, value } = updateTaskValidator.validate(req.body);
         if (error) {
             return res.status(422).json(error);
         }
-
+        // checking if task and user exists 
         const { id } = req.params;
-    
-        const task = await TaskModel.findByIdAndUpdate(id, value, { 
-            new: true,  // This will return the updated document
-        }).populate('service'); // Populate any references if needed
-    
-        if (task) {
-            return res.status(201).send({ 
-                message: 'Updated Successfully', 
-                data: task 
+        // First find the task
+        const taskFind = await TaskModel.findOne({
+            _id: req.params.id,
+            user: req.auth.userId
+        });
+
+        if (!taskFind) {
+            return res.status(404).json({
+                success: false,
+                message: 'Task not found or unauthorized'
             });
         }
-      } catch (error) {
+        // update task
+        const task = await TaskModel.findByIdAndUpdate(id, value, {
+            new: true,  // This will return the updated document
+        }).populate('service'); // Populate any references if needed
+
+        if (task) {
+            return res.status(201).send({
+                message: 'Updated Successfully',
+                data: task
+            });
+        }
+    } catch (error) {
         return res.status(500).send({ error: "Failed to find" });
-      }
+    }
 }
 
 
@@ -126,7 +138,7 @@ export const deleteTask = async (req, res) => {
     try {
         const task = await TaskModel.findOneAndDelete({
             _id: req.params.id,
-            user: req.auth.userId,  
+            user: req.auth.userId,
             status: 'pending'
         });
 
