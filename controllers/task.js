@@ -1,7 +1,7 @@
 import { TaskModel } from "../models/task.js";
 import { notifyAdminNewTask } from "../utils/emailService.js";
 import { UserModel } from "../models/user.js";
-import { addTaskValidator } from "../validators/task.js";
+import { addTaskValidator, updateTaskValidator } from "../validators/task.js";
 
 
 
@@ -96,32 +96,29 @@ export const getUserTasks = async (req, res) => {
 }
 
 
-export const updateTask = async (req, res) => {
+export const updateTask = async (req, res, next) => {
     try {
-        const updates = Object.keys(req.body);
-        const allowedUpdates = ['description', 'scheduledDate', 'priority', 'status'];
-        const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
-        if (!isValidOperation) {
-            return res.status(400).json({ message: 'Invalid updates' });
+        const {error, value} = updateTaskValidator.validate(req.body);
+        if (error) {
+            return res.status(422).json(error);
         }
 
-        const task = await TaskModel.findOne({ 
-            _id: req.params.id, 
-            user: req.auth.userId  
-        });
-
-        if (!task) {
-            return res.status(404).json({ message: 'Task not found' });
+        const { id } = req.params;
+    
+        const task = await TaskModel.findByIdAndUpdate(id, value, { 
+            new: true,  // This will return the updated document
+        }).populate('service'); // Populate any references if needed
+    
+        if (task) {
+            return res.status(201).send({ 
+                message: 'Updated Successfully', 
+                data: task 
+            });
         }
-
-        updates.forEach(update => task[update] = req.body[update]);
-        await task.save();
-
-        res.json(task);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating task' });
-    }
+      } catch (error) {
+        return res.status(500).send({ error: "Failed to find" });
+      }
 }
 
 

@@ -41,7 +41,6 @@ const taskSchema = new Schema({
     },
     upload: {
         type: String,
-        required: true
     },
     scheduledDate: {
         type: Date,
