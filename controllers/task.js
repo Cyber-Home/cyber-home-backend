@@ -15,23 +15,26 @@ export const createTask = async (req, res) => {
         // Debug log to check auth object
         console.log('Auth object:', req.auth);
 
-        // Check if auth exists
-        if (!req.auth || req.auth.id) {
-            return res.status(401).json({
-                success: false,
-                message: 'User not authenticated'
-            });
-        }
-
         // validating task details
         const { service, title, description, contactPerson, phone, upload, scheduledDate, location } = req.body;
         
         // adding user id to task created
-        const userId = req.auth.id;
+        const userId = req.auth.userId;
+        console.log('Converted userId:', userId);
 
-        const user = await UserModel.findOne(userId);
+        const user = await UserModel.findById(userId);
+        console.log('Found user:', user);
+        
+        // checking if user is authenticated
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ 
+                success: false,
+                message: "User not found",
+                debugInfo: { 
+                    searchedId: userId,
+                    tokenInfo: req.auth 
+                } 
+            });
         }
 
         // creating task with auth.id
@@ -46,9 +49,6 @@ export const createTask = async (req, res) => {
             location,
             upload:req.file?.filename
         });
-
-        // Add optional fields if they exist
-        if (upload) task.upload = upload;
 
         // Debug log to check task data
         console.log('Task data before save:', task);
