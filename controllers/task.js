@@ -84,7 +84,7 @@ export const createTask = async (req, res) => {
 
 export const getUserTasks = async (req, res) => {
     try {
-        const tasks = await TaskModel.find({ user: req.auth.id })
+        const tasks = await TaskModel.find({ user: req.auth.userId })
             .populate('service')
             .populate('worker')
             .sort({ createdAt: -1 });
@@ -108,7 +108,7 @@ export const updateTask = async (req, res) => {
 
         const task = await TaskModel.findOne({ 
             _id: req.params.id, 
-            user: req.auth.id  
+            user: req.auth.userId  
         });
 
         if (!task) {
@@ -129,7 +129,7 @@ export const deleteTask = async (req, res) => {
     try {
         const task = await TaskModel.findOneAndDelete({
             _id: req.params.id,
-            user: req.auth.id,  
+            user: req.auth.userId,  
             status: 'pending'
         });
 
