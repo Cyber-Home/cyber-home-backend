@@ -7,7 +7,7 @@ const userRouter = Router();
 
 userRouter.post('/register', remoteUpload.single('uploadId'), register);
 userRouter.post('/login', login);
-userRouter.get('/profile', [isAuthenticated], getProfile);
-userRouter.patch('/profile', [isAuthenticated], updateProfile);
+userRouter.get('/profile', isAuthenticated, getProfile);
+userRouter.patch('/profile', isAuthenticated, updateProfile);
 
 export default userRouter;

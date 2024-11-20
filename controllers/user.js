@@ -7,7 +7,7 @@ import { sendWelcomeEmail } from "../utils/emailService.js";
 export const register = async (req, res) => {
     try {
         // validate user input
-        const { error, value } = registerUserValidator.validate({...req.body, uploadId:req.file?.filename});
+        const { error, value } = registerUserValidator.validate({ ...req.body, uploadId: req.file?.filename });
         if (error) {
             return res.status(422).json(error);
         }
@@ -28,7 +28,7 @@ export const register = async (req, res) => {
             occupation,
             password,
             phone,
-            uploadId:req.file?.filename
+            uploadId: req.file?.filename
         });
 
         await user.save();
@@ -104,7 +104,7 @@ export const login = async (req, res) => {
 export const getProfile = async (req, res, next) => {
     try {
         // find authenticated user from database
-        const user = await UserModel.findById(req.auth.id).select({password: false});
+        const user = await UserModel.findById(req.auth.userId).select({ password: false });
         // respond to request
         res.json(user);
     } catch (error) {
@@ -114,17 +114,21 @@ export const getProfile = async (req, res, next) => {
 
 
 export const updateProfile = async (req, res) => {
-    const { error, value } = updateProfileValidator.validate({
-        ...req.body,
-        avatar: req.file?.filename
-    });
-    if (error) {
-        return res.status(422).json({ errors: error.details });
-    }
-
     try {
-        await UserModel.findByIdAndUpdate(req.user.id, value);
-        res.json('Profile updated');
+        // validating update input
+        const { error, value } = updateProfileValidator.validate({
+            ...req.body,
+            uploadId: req.file?.filename
+        });
+        if (error) {
+            return res.status(422).json({ errors: error.details });
+        }
+        // Finding user to update
+        const user = await UserModel.findByIdAndUpdate(req.auth.userId, value, { new: true });
+        res.status(201).json({ 
+            message: 'Profile updated',
+            data: user
+         });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
